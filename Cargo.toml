@@ -1,0 +1,20 @@
+[package]
+name = "axiom_trade_bot"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+teloxide = { version = "0.12", features = ["macros", "ctrlc_handler", "sqlite-storage-rustls"] }
+tokio = { version = "1.35", features = ["rt-multi-thread", "macros"] }
+log = "0.4"
+pretty_env_logger = "0.5"
+
+sqlx = { version = "0.7", features = ["sqlite", "runtime-tokio-rustls"] }
+serde = { version = "1.0", features = ["derive"] }
+
+solana-sdk = "1.18"
+solana-client = "1.18"
+futures-util = "0.3"
+
+aes-gcm = "0.10"
+base64 = "0.22"
