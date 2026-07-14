@@ -1,42 +1,32 @@
-# ---------------------------------------------------
-# Stage 1: Builder
-# ---------------------------------------------------
-FROM rust:1.80-slim-bookworm AS builder
+name: Docker Image CI
 
-# Install build dependencies (pkg-config and libssl are common for Rust crypto/networking)
-RUN apt-get update && apt-get install -y pkg-config libssl-dev
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
-# Create a new empty shell project
-WORKDIR /usr/src/axiom_trade_bot
-COPY . .
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-# Build the bot for release
-RUN cargo build --release
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-# ---------------------------------------------------
-# Stage 2: Runtime Environment
-# ---------------------------------------------------
-FROM debian:bookworm-slim
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-# Install runtime dependencies
-# ca-certificates: Required for HTTPS requests to Telegram API and Solana RPC
-# sqlite3: Useful if you ever need to SSH into the Railway container to debug the DB
-RUN apt-get update && apt-get install -y ca-certificates sqlite3 && rm -rf /var/lib/apt/lists/*
+    # Railway can build your Dockerfile natively, but this action acts as a CI 
+    # pipeline to guarantee your Docker image successfully builds before deployment.
+    - name: Build the Docker image
+      run: |
+        docker build . \
+          --file Dockerfile \
+          --tag axiom-trade-bot:${{ github.sha }} \
+          --tag axiom-trade-bot:latest
 
-WORKDIR /app
-
-# Copy the compiled binary from the builder stage
-COPY --from=builder /usr/src/axiom_trade_bot/target/release/axiom_trade_bot /app/
-
-# Copy the assets folder (required for the solana_logo.png)
-COPY assets /app/assets
-
-# Set environment variables
-ENV RUST_LOG=info
-
-# Ensure the binary has execution permissions
-RUN chmod +x /app/axiom_trade_bot
-
-# Command to run the bot
-CMD ["./axiom_trade_bot"]
+    # Optional: If you want to push this to GitHub Container Registry (GHCR)
+    # so Railway pulls the pre-built image instead of building it from scratch,
+    # you would add a `docker login` and `docker push` step here.
 
