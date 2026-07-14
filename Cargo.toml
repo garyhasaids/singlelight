@@ -4,12 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-teloxide = { version = "0.27", features = ["macros", "ctrlc_handler", "sqlite-storage-rustls"] }
+teloxide = { version = "0.17", features = ["macros", "ctrlc_handler", "sqlite-storage-rustls"] }
 tokio = { version = "1.40", features = ["rt-multi-thread", "macros", "time"] }
 log = "0.4"
 pretty_env_logger = "0.5"
 
-sqlx = { version = "0.8.1", features = ["sqlite", "runtime-tokio-rustls"] }
+sqlx = { version = "0.9", features = ["sqlite", "runtime-tokio-rustls"] }
 serde = { version = "1.0", features = ["derive"] }
 
 solana-sdk = "1.18"
