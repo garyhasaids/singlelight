@@ -1,13 +1,14 @@
 # ---------------------------------------------------
 # Stage 1: Builder
 # ---------------------------------------------------
-FROM rust:1.80-slim-bookworm AS builder
+FROM rust:1.85-slim-bookworm AS builder
 
 # Install build dependencies (pkg-config and libssl are common for Rust crypto/networking)
 RUN apt-get update && apt-get install -y pkg-config libssl-dev
 
 # Create a new empty shell project
 WORKDIR /usr/src/axiom_trade_bot
+
 COPY . .
 
 # Build the bot for release
@@ -39,4 +40,3 @@ RUN chmod +x /app/axiom_trade_bot
 
 # Command to run the bot
 CMD ["./axiom_trade_bot"]
-
