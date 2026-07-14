@@ -12,10 +12,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@latest
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@latest
 
     # Railway can build your Dockerfile natively, but this action acts as a CI 
     # pipeline to guarantee your Docker image successfully builds before deployment.
